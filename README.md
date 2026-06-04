@@ -1,44 +1,39 @@
 # Modelizado-de-sistemas-de-IA
 
 # Practica 1
-Esta práctica de laboratorio implementa dos soluciones de **Inteligencia Artificial Clásica** (Sistemas Basados en Conocimiento y Satisfacción de Restricciones) para automatizar la toma de decisiones y la seguridad en una obra en construcción.
+Esta práctica aplica **IA Clásica** para resolver dos problemas en una obra:
 
-Aquí te explico brevemente qué pasa en cada una de las dos misiones resueltas:
+1. **Misión A (Seguridad):** Usa la librería `experta` como un motor de reglas. Si los sensores detectan peligro extremo (viento $> 60\ km/h$ o grietas), la regla con máxima prioridad (`salience=100`) se activa inmediatamente y frena todo. En la prueba, el sistema ordenó con éxito el **"PARO TOTAL DE OBRA"**.
+2. **Misión B (Logística):** Usa `python-constraint` para asignar 3 máquinas a 3 zonas sin que colisionen ni violen normas de seguridad. El algoritmo descarta las opciones incorrectas y encuentra **la única combinación segura**: Grúa en *Zona_Estable*, Hormigonera en *Zona_Estrecha* y Excavadora en *Zona_Comun*.
 
----
+# Practica 2
+Este script usa un **Algoritmo Genético** (`pygad`) para organizar un calendario de construcción eficiente.
 
-## Misión A: Diagnóstico de Seguridad (Motor de Inferencia)
+* **El Objetivo:** Iniciar **10 tareas** en el menor tiempo posible, sin usar nunca más de **10 operarios por día**.
+* **¿Cómo funciona?** El algoritmo prueba miles de calendarios (individuos) donde cada gen es el día de inicio de una tarea.
+* **La Clave (Penalización):** Si un calendario junta muchas tareas en paralelo y supera los 10 operarios, su nivel de aptitud (*fitness*) cae a cero para ser descartado inmediatamente.
+* **Resultado:** En la simulación, la IA logró acomodar perfectamente las tareas para terminar la casa en solo **16 días**, respetando siempre el límite de personal.
 
-En esta parte se utiliza la librería `experta` para crear un **Sistema Experto** que evalúa el nivel de riesgo climático y estructural de la obra.
+# Practica 3
+Este script utiliza **Lógica Difusa (Fuzzy Logic)** (`skfuzzy`) para automatizar el **frenado autónomo de emergencia** de un vehículo inteligente.
 
-* **¿Cómo funciona?** El sistema simula el pensamiento de un supervisor de seguridad mediante reglas lógicas (`@Rule`). Lee datos de sensores (viento, presencia de grietas, humedad) y determina si la obra debe continuar normalmente o detenerse.
-* **La Clave Técnica:** Se configuró un parámetro llamado `salience=100` (prioridad) en la regla de **Riesgo Crítico**. Esto garantiza que si hay un peligro extremo (viento $> 60\ km/h$ o grietas), el motor detiene la obra inmediatamente antes de perder tiempo evaluando otras condiciones menores.
-* **Resultado del test:** Se probó con viento de $65\ km/h$ y grietas activas, y el sistema arrojó con éxito el diagnóstico de **"PARO TOTAL DE OBRA"**.
+* **El Objetivo:** Calcular la **Fuerza de Frenado** óptima basándose en la **Distancia** al obstáculo y la **Velocidad** del auto.
+* **¿Cómo funciona?** 1. **Fuzzificación:** Convierte los datos de los sensores en etiquetas como *"Cerca"*, *"Lejos"*, *"Baja"* o *"Alta velocidad"*.
+2. **Reglas Difusas:** Evalúa sentencias lógicas (ej. *SI la distancia es "Muy Cerca" Y la velocidad es "Alta", ENTONCES el freno es "Crítico"*).
+3. **Defuzzificación:** Procesa las reglas activadas y devuelve un porcentaje exacto de presión de freno (ej. **78.47%**).
+* **Resultado:** Ante un peligro inminente (obstáculo a 8 metros y viajando a 90 km/h), el sistema reacciona con precisión ordenando un **frenado intenso del 78.47%** para evitar el choque.
 
----
+# Practica 4 
+Este script aplica el algoritmo **A*** (A-Estrella) para que un robot de rescate esquive escombros y salve a una víctima.
 
-## Misión B: Ubicación de Equipos (Problema de Satisfacción de Restricciones - CSP)
+* **El Objetivo:** Encontrar la **ruta más corta y segura** en un mapa cuadriculado con obstáculos.
+* **¿Cómo funciona?** El algoritmo decide qué casilla pisar usando una fórmula inteligente:
 
-Aquí se utiliza la librería `python-constraint` para resolver un problema de logística: asignar **3 máquinas** (Grúa Torre, Excavadora, Hormigonera) a **3 zonas** de trabajo distintas sin que entren en conflicto.
-
-El motor de búsqueda analiza todas las combinaciones posibles y "poda" (descarta) las que rompen las **Reglas de Oro**:
-
-1. **Exclusividad:** No puede haber dos máquinas en la misma zona.
-2. **Grúa Torre:** Obligatoriamente en la *Zona_Estable*.
-3. **Excavadora:** No cabe en la *Zona_Estrecha*.
-4. **Hormigonera:** No puede compartir espacio con la grúa para evitar tráfico.
-
-* **Resultado:** El algoritmo descartó inteligentemente las opciones peligrosas y encontró **la única solución matemáticamente segura**:
-* `Grua_Torre` $\rightarrow$ *Zona_Estable*
-* `Hormigonera` $\rightarrow$ *Zona_Estrecha*
-* `Excavadora` $\rightarrow$ *Zona_Comun*
+$$f(n) = g(n) + h(n)$$
 
 
+* $g(n)$: Pasos dados desde el inicio.
+* $h(n)$: Distancia estimada en línea recta hasta la víctima (Heurística).
 
----
 
-### Lo que falta completar (Nota para tu entrega)
-
-El enunciado de la práctica exige incluir una **Justificación Funcional** en celdas de texto explicando por qué estos enfoques son mejores que usar simples condicionales `if/else`.
-
-> **Idea para tu justificación:** Si usaras `if/else` anidados, el código se volvería inmanejable, rígido y propenso a errores a medida que agregues más sensores o más máquinas. En cambio, con `experta` (árboles de decisión/algoritmo Rete) y `python-constraint` (grafos de restricciones), el motor de IA calcula las rutas y descartes óptimos de forma dinámica, haciendo el sistema escalable y fácil de mantener.
+* **Resultado:** El algoritmo calcula la ruta óptima, dibuja el mapa con los obstáculos y traza el camino exacto para el rescate.
