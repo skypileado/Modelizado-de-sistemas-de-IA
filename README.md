@@ -1,4 +1,4 @@
-# Modelizado-de-sistemas-de-IA
+# Modelizado de sistemas de IA
 
 # Practica 1
 Esta práctica aplica **IA Clásica** para resolver dos problemas en una obra:
